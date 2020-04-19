@@ -1,0 +1,279 @@
+<?xml version="1.0" ?>
+
+	<!-- 
+	***************************************************************************
+	1)  You need to have the most recently updated SRS project and SPRR project
+		at the same level as the external SRS project. The internal SRS project 
+		should be named 'srs' and the SPRR project should be named 'srsrc'.
+		If you have named your internal SRS or SPRR project something other 
+		than the above in quotes, please modify the srs.root and/or srsrc.root 
+		property below to reflect your change to this file LOCALLY.
+		
+		You will need Tomcat and a JRE installed. You will also need to set the
+		TOMCAT_HOME and JAVA_HOME environment variables on your system. You also
+		need ant installed: v1.6.2 or greater.
+		
+	2) 	ant refresh_files
+			Will copy all necessary files from the main SRS project and 
+			perform a compile.
+			
+		ant compile_webinf_java
+			Will rebuild the Java files
+			
+		ant clean 
+			Will remove the compiled class files
+			
+	    ant clean_project 
+	    	Will remove all files that are not stored in VSS
+			
+		ant clean_build
+			Will remove the compiled class files and compile the project
+			
+	3) 	ant copy_to_staging
+			Will copy all necessary files to a staging directory that you 
+			desigate in order to copy the files to the pruction server.
+			Currently, this directory is at C:\SRS_EXT, to change the path
+			modify the staging property on the LOCAL copy of this file.
+			Note: this does not copy source files.
+	***************************************************************************
+	-->
+
+<project name="SRS_QDI_External" default="compile_webinf_java">
+	<!-- set the properties -->
+	<property name="eclipse.root" location="."/>	
+	<property name="java.build" location="${eclipse.root}/WEB-INF/classes"/>
+	<property name="java.src" location="${eclipse.root}/WEB-INF/src"/>
+	<property name="java.lib" location="${eclipse.root}/WEB-INF/lib"/>
+	<property name="srs.root" location="../SRS_12152008"/>	
+	<property name="srsrc.root" location="../SRSRC/rc"/>	
+	<property name="staging" location="C:/SRS_EXT"/>	
+	<property environment="env"/>
+	<property name="tomcat.home" location="${env.TOMCAT_HOME}"/>
+	
+	<!-- 
+	***************************************************************************
+	end of PROPERTIES set-up 
+	***************************************************************************
+	-->
+
+	<target name="init">
+	    <tstamp>
+	       <format property="FORMAT_DATE" pattern="MM/dd/yyyy hh:mm:ss aa" locale="en"/>
+	    </tstamp>
+		<echo message="time started: ${FORMAT_DATE}"/>
+		
+		<!-- set the class paths -->
+		<path id="project.class.path">
+			<path location="${java.build}"/>
+			<fileset dir="${tomcat.home}/bin"> 
+		    	<include name="*.jar"/> 
+		    </fileset> 
+		    <fileset dir="${tomcat.home}/server/lib"> 
+		          <include name="*.jar"/> 
+		    </fileset> 
+		    <fileset dir="${tomcat.home}/common/lib"> 
+		      	<include name="*.jar"/> 
+		        <exclude name="itext*"/>
+		    </fileset> 
+		    <fileset dir="${tomcat.home}/common/endorsed"> 
+		      	<include name="*.jar"/> 
+		    </fileset> 
+		    <fileset dir="${java.lib}"> 
+		      	<include name="*.jar"/> 
+		    </fileset> 
+		    <dirset dir="${java.lib}"> 
+		      	<include name="**"/> 
+		    </dirset> 
+		</path>				
+	</target>
+ 	
+	<!-- compile Java files  -->
+	<target name="compile_webinf_java" depends="init">
+		<javac srcdir="${java.src}" destdir="${java.build}"
+	    	debug="true" debuglevel="lines, vars, and source">
+			<classpath refid="project.class.path"/>
+		</javac>
+		
+		<!-- include the other files needed from the src directory -->
+		<copy todir="${java.build}">
+			<fileset dir="${java.src}">
+				<include name="**/*.xml"/>
+				<include name="**/*.properties"/>
+			</fileset>
+		</copy>
+	</target>
+			
+	<!-- 
+	***************************************************************************
+	end of DEFAULT target and dependencies 
+	***************************************************************************
+	-->
+	
+	<!-- clean out the project, called by clean_build -->
+	<target name="clean">
+		<delete includeemptydirs="true"> 
+			<fileset dir="${java.build}"/>
+		</delete>
+		<mkdir dir="${java.build}"/>
+	</target>
+
+	<!-- clean out the project and do a build, 
+	     call this manually from eclipse to empty directories before building -->
+	<target name="clean_build" depends="clean">
+		<antcall target="compile_webinf_java"/>
+	</target>
+
+	<!-- 
+	***************************************************************************
+	end of CLEAN_BUILD target and dependencies 
+	***************************************************************************
+	-->
+
+	<target name="refresh_files" depends="init, clean_project">
+		<!-- get the images -->
+		<copy file="${srs.root}/images/dialog.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/dialog1.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/message.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/popupHeader.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/printer.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/qdiscorecard_t.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/qdiSupplierEvals.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/sc_icon.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/ScoreCardLegend.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/space.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/score0.0.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/score1.0.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/score2.0.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/score3.0.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/score4.0.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/trend_up_arrow.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/trend_down_arrow.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/trend_level_arrow.gif" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/trend_up_arrow.jpg" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/trend_down_arrow.jpg" todir="${eclipse.root}/images"/>
+		<copy file="${srs.root}/images/trend_level_arrow.jpg" todir="${eclipse.root}/images"/>
+		<!-- get the JavaScript -->
+		<copy file="${srs.root}/jscript/JSParentPopupHandler.js" todir="${eclipse.root}/jscript"/>
+		<copy file="${srs.root}/jscript/srsqdiHome.js" todir="${eclipse.root}/jscript"/>
+		<copy file="${srs.root}/jscript/srsqdiScoreCard.js" todir="${eclipse.root}/jscript"/>
+		<!-- get the styles -->
+		<copy file="${srs.root}/styles/srsQDIHome.css" todir="${eclipse.root}/styles"/>
+		<copy file="${srs.root}/styles/srsqdiScoreCard.css" todir="${eclipse.root}/styles"/>
+		<!-- get the lib files -->
+		<copy todir="${eclipse.root}/WEB-INF/lib/blowfish">
+			<fileset dir="${srsrc.root}/WEB-INF/lib/blowfish"/>
+		</copy>
+		<copy todir="${eclipse.root}/WEB-INF/lib/com">
+			<fileset dir="${srsrc.root}/WEB-INF/lib/com"/>
+		</copy>
+		<!-- get the Java files -->
+		<copy file="${srs.root}/WEB-INF/src/srsCommon/srsMessageConsole.java" todir="${eclipse.root}/WEB-INF/src/srsCommon"/>
+		
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/beans/DataBean.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/beans"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/beans/QDIRoadmapInfoBean.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/beans"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/beans/QDIScoreCardBean.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/beans"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/beans/QDISupplierEvalsBean.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/beans"/>
+		
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/pdf/PDFInterface.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/pdf"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/pdf/PDFShared.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/pdf"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/pdf/ScoresheetExternalPDF.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/pdf"/>
+
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/scorecard/QDIScoreCardAbstract.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/scorecard"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/scorecard/QDIScoreCardFields.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/scorecard"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/scorecard/QDIScoreCardInterface.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/scorecard"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/scorecard/QDIScoreCardLib.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/scorecard"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/scorecard/QDIScoreCardSprrExt.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/scorecard"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/scorecard/QDIScoreCardUpdate.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/scorecard"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/scorecard/QDIScoreCardValuesAbstract.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/scorecard"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/scorecard/QDIScoreCardValues.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/scorecard"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/scorecard/QDIScoreCardProperties.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/scorecard"/>
+
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/utils/InitQDI.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/utils"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/utils/QDIDbUtils.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/utils"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/utils/QDICommon.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/utils"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/utils/QDIUtils.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/utils"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/utils/srsqdiMessage.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/utils"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/utils/srsqdiMessageDisp.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/utils"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/utils/StaticQDIData.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/utils"/>
+
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiRoadmap.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiRoadmapDisp.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
+
+		<!-- This file has no also become specific to external use and has been added to the VSS external project 
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiScoreCard.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/> -->
+		
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiScoreCardSprrExt.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiScoreCardSprrExtDisp.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiScoreCardSprrInt.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiSupplierEvalsSprrInt.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
+		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiSupplierEvalsSprrIntDisp.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
+		
+		<mkdir dir="${java.build}"/>
+		
+		<antcall target="compile_webinf_java"/>
+	</target>
+	
+	<target name="clean_project">
+		<!-- delete everything that is not stored in VSS -->
+		<delete dir="${eclipse.root}/images"/>
+		<delete dir="${eclipse.root}/jscript"/>
+		<delete dir="${eclipse.root}/styles"/>
+		<delete dir="${java.build}"/>
+		<delete dir="${java.lib}/blowfish"/>
+		<delete dir="${java.lib}/com"/>
+		<delete file="${java.src}/srsCommon/srsMessageConsole.java"/>
+		<delete dir="${java.src}/srsqdiApp"/>		
+	</target>
+
+	
+	<!-- 
+	***************************************************************************
+	end of REFRESH_FILES  
+	***************************************************************************
+	-->	
+	
+	<target name="copy_to_staging">
+		<delete includeemptydirs="true">
+		    <fileset dir="${staging}" includes="**/*"/>
+		</delete>
+		
+		<copy todir="${staging}/images">
+			<fileset dir="${eclipse.root}/images"/>
+		</copy>
+		<copy todir="${staging}/jscript">
+			<fileset dir="${eclipse.root}/jscript"/>
+		</copy>
+		<copy todir="${staging}/styles">
+			<fileset dir="${eclipse.root}/styles"/>
+		</copy>
+		<copy todir="${staging}/WEB-INF/classes">
+			<fileset dir="${eclipse.root}/WEB-INF/classes"/>
+		</copy>
+		<!--
+		<copy todir="${staging}/WEB-INF/lib">
+			<fileset dir="${eclipse.root}/WEB-INF/lib"/>
+		</copy> 
+		<copy file="${eclipse.root}/WEB-INF/lib/itext-1.3.jar" todir="${staging}/WEB-INF/lib"/>
+		-->
+		<copy file="${eclipse.root}/WEB-INF/lib/sprr_shared_ext.jar" todir="${staging}/WEB-INF/lib"/>
+
+		<copy file="${eclipse.root}/WEB-INF/web.xml" todir="${staging}/WEB-INF"/>
+	</target>
+
+	<!-- 
+	***************************************************************************
+	end of COPY_TO_STAGING  
+	***************************************************************************
+	-->	
+
+	<target name="jar_qdi" depends="compile_webinf_java, copy_to_staging">	
+		<jar destfile="${staging}/WEB-INF/lib/srsqdiApp.jar"
+	       	basedir="${java.build}"
+	       	includes="**"/>
+		
+		<!-- delete the class files that we used to make this jar -->
+		<delete includeemptydirs="true"> 
+			<fileset dir="${staging}/WEB-INF/classes"/>
+		</delete>
+	</target>
+</project>

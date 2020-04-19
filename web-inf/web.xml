@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+	PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+	"http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+ 	<servlet>
+		<servlet-name>InitQDI</servlet-name>
+		<servlet-class>srsqdiApp.utils.InitQDI</servlet-class>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>srsqdiSupplierEvalsSprrInt</servlet-name>
+		<servlet-class>srsqdiApp.srsqdiSupplierEvalsSprrInt</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>srsqdiMessage</servlet-name>
+		<servlet-class>srsqdiApp.utils.srsqdiMessage</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>srsqdiScoreCardSprrInt</servlet-name>
+		<servlet-class>srsqdiApp.srsqdiScoreCardSprrInt</servlet-class>
+	</servlet>	
+	<servlet>
+		<servlet-name>srsqdiScoreCard</servlet-name>
+		<servlet-class>srsqdiApp.srsqdiScoreCard</servlet-class>
+	</servlet>	
+	<servlet>
+		<servlet-name>srsqdiScoreCardSprrExt</servlet-name>
+		<servlet-class>srsqdiApp.srsqdiScoreCardSprrExt</servlet-class>
+	</servlet>	
+	<servlet>
+		<servlet-name>srsqdiScoreCardSprrExtDisp</servlet-name>
+		<servlet-class>srsqdiApp.srsqdiScoreCardSprrExtDisp</servlet-class>
+	</servlet>	
+
+	<servlet>
+		<servlet-name>srsqdiRoadmap</servlet-name>
+		<servlet-class>srsqdiApp.srsqdiRoadmap</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>ScoresheetExternalPDF</servlet-name>
+		<servlet-class>srsqdiApp.pdf.ScoresheetExternalPDF</servlet-class>
+	</servlet>
+
+<!--%%%%%%%%%%%%   Servlet Mappings  %%%%%%%%%%%%%%%-->
+
+	<servlet-mapping>
+		<servlet-name>srsqdiSupplierEvalsSprrInt</servlet-name>
+		<url-pattern>/srsqdiSupplierEvalsSprrInt</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>srsqdiMessage</servlet-name>
+		<url-pattern>/srsqdiMessage</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>srsqdiScoreCardSprrInt</servlet-name>
+		<url-pattern>/srsqdiScoreCardSprrInt</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>srsqdiScoreCard</servlet-name>
+		<url-pattern>/srsqdiScoreCard</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>srsqdiScoreCardSprrExt</servlet-name>
+		<url-pattern>/srsqdiScoreCardSprrExt</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>srsqdiScoreCardSprrExtDisp</servlet-name>
+		<url-pattern>/srsqdiScoreCardSprrExtDisp</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>srsqdiRoadmap</servlet-name>
+		<url-pattern>/srsqdiRoadmap</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>ScoresheetExternalPDF</servlet-name>
+		<url-pattern>/ScoresheetExternalPDF</url-pattern>
+	</servlet-mapping>	
+
+	<session-config>
+  		<session-timeout>180</session-timeout>
+  	</session-config>
+  		
+</web-app>
