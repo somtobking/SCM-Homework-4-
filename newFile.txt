@@ -1,1 +1,3 @@
 this is the new file i am adding to demonstrate the command line instructions for Git
+
+Edited this to show pull from desktop application
